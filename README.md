@@ -16,8 +16,6 @@ https://ceda-wps-ui.ceda.ac.uk/
 ## Data Wrangling
 [This notebook](Notebooks/Data_Wrangling.ipynb) involved loading in the general food price data, which was in a very condensed format where each row was a combination of country, state, market, name of the good, its price, and the date, which was converted to datetime format. In order to focus the analysis and get a single time series to work with I chose Niger as a specific country to focus on. Niger had the longest time series in the dataset, and included goods that were found in several other countries such as milllet. I wanted to compare the price of a good across several different countries, but the prices for each were listed in the local currency, making direct comparison impossible. Instead, I **averaged the percent change in price** for that good across that timeframe, and saved that as a seperate dataframe. 
 
-![](Images/percent_change_millet.png)
-
 ## Exploratory Data Analysis
 In the first part of [this notebook](Notebooks/EDA.ipynb) I selected all of the data from Niger then "unpivoted" the goods data from into seperate columns and averaged the prices across all of the markets, creating a dataframe where each row was one unique date and each good had its own column. These goods were then graphed to see overall trends and determine what good should be studied.
 
@@ -39,7 +37,7 @@ A basic ARIMA model does not work well with seasonality, and clearly changes in 
 ## Final Modeling
 [The final part of the project](Notebooks/Final_Modeling.ipynb) involved adding external data to improve the models, as well as making them more robust. I chose to use historical climate data from the [Centre for Enviornmental Data Analysis](https://ceda-wps-ui.ceda.ac.uk/) in order to improve my predictions, specifically **temperature and precipitation data** for Niger over the time period I was studying. This came in the form of a netCDF file, which contained coordinate based climate data that I averaged across the whole country and converted into a dataframe that could be combined into my time series.
 
-![](Images/wet_days.png)
+![](Images/wet_days2.png)
 
 Normally a SARIMA model cannot handle external (exogenous) variables, but a variant called a SARIMAX model can. Repeating the process from the previous notebook created a model that performed (very) slightly better on the test set, but again failed dramatically on cross-validation. I chose to try simple regression techniques again, and tested sklearn's **LinearRegressor** and **RandomForestRegressor** on the dataset with cross-validation and a **grid search** for hyperparameter tuning. I found that a random forest model produced the best results. While it performed somewhat worse on the test set (mape ~12%), it was much more robust on cross-validation, and produced reasonable results even when less data was given to the model. 
 
